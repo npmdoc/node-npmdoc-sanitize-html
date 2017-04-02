@@ -1,0 +1,145 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/punkave/sanitize-html#readme"
+
+    >sanitize-html (v1.14.1)</a>
+</h1>
+<h4>Clean up user-submitted HTML, preserving whitelisted elements and whitelisted attributes on a per-element basis</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.sanitize-html">module sanitize-html</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.sanitize-html.simpleTransform">
+            function <span class="apidocSignatureSpan">sanitize-html.</span>simpleTransform
+            <span class="apidocSignatureSpan">(newTagName, newAttribs, merge)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">sanitize-html.</span>defaults</span>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.sanitize-html" id="apidoc.module.sanitize-html">module sanitize-html</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.sanitize-html.simpleTransform" id="apidoc.element.sanitize-html.simpleTransform">
+        function <span class="apidocSignatureSpan">sanitize-html.</span>simpleTransform
+        <span class="apidocSignatureSpan">(newTagName, newAttribs, merge)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">simpleTransform = function (newTagName, newAttribs, merge) {
+  merge = (merge === undefined) ? true : merge;
+  newAttribs = newAttribs || {};
+
+  return function(tagName, attribs) {
+    var attrib;
+    if (merge) {
+      for (attrib in newAttribs) {
+        attribs[attrib] = newAttribs[attrib];
+      }
+    } else {
+      attribs = newAttribs;
+    }
+
+    return {
+      tagName: newTagName,
+      attribs: attribs
+    };
+  };
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+You can specify the `*` wildcard instead of a tag name to transform all tags.
+
+There is also a helper method which should be enough for simple cases in which you want to change the tag and/or add some attributes
+:
+
+```js
+clean = sanitizeHtml(dirty, {
+  transformTags: {
+    &#x27;ol&#x27;: sanitizeHtml.<span class="apidocCodeKeywordSpan">simpleTransform</span>(&#x27;ul&#x27;, {class: &#x27;foo&#x27
+;}),
+  }
+});
+```
+
+The `simpleTransform` helper method has 3 parameters:
+
+```js
+...</pre></li>
+    </ul>
+
+
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
