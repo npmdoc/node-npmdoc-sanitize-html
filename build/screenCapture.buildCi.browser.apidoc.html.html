@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/punkave/sanitize-html#readme"
-
-    >sanitize-html (v1.14.1)</a>
+    <a href="https://github.com/punkave/sanitize-html#readme">sanitize-html (v1.14.1)</a>
 </h1>
 <h4>Clean up user-submitted HTML, preserving whitelisted elements and whitelisted attributes on a per-element basis</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.sanitize-html">module sanitize-html</a><ol>
 
@@ -110,14 +103,14 @@
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function sanitizeHtml(html, options, _recursing) {
-  var result = &#x27;&#x27;;
+  var result = '';
 
   function Frame(tag, attribs) {
     var that = this;
     this.tag = tag;
     this.attribs = attribs || {};
     this.tagPosition = result.length;
-    this.text = &#x27;&#x27;; // Node inner text
+    this.text = ''; // Node inner text
 
     this.updateParentNodeText = function() {
       if (stack.length) {
@@ -143,7 +136,7 @@
   // the text when the tag is disallowed makes sense for other reasons.
   // If we are not allowing these tags, we should drop their content too.
   // For other tags you would drop the tag but keep its content.
-  var nonTextTagsArray = options.nonTextTags || [ &#x27;script&#x27;, &#x27;style&#x27;, &#x27;textarea&#x27; ];
+  var nonTextTagsArray = options.nonTextTags || [ 'script', 'style', 'textarea' ];
   var allowedAttributesMap;
   var allowedAttributesGlobMap;
   if(options.allowedAttributes) {
@@ -153,13 +146,13 @@
       allowedAttributesMap[tag] = [];
       var globRegex = [];
       attributes.forEach(function(name) {
-        if(name.indexOf(&#x27;*&#x27;) &#x3e;= 0) {
-          globRegex.push(quoteRegexp(name).replace(/\\\*/g, &#x27;.*&#x27;));
+        if(name.indexOf('*') &gt;= 0) {
+          globRegex.push(quoteRegexp(name).replace(/\\\*/g, '.*'));
         } else {
           allowedAttributesMap[tag].push(name);
         }
       });
-      allowedAttributesGlobMap[tag] = new RegExp(&#x27;^(&#x27; + globRegex.join(&#x27;|&#x27;) + &#x27;)$&#x27;);
+      allowedAttributesGlobMap[tag] = new RegExp('^(' + globRegex.join('|') + ')$');
     });
   }
   var allowedClassesMap = {};
@@ -169,7 +162,7 @@
       if (!has(allowedAttributesMap, tag)) {
         allowedAttributesMap[tag] = [];
       }
-      allowedAttributesMap[tag].push(&#x27;class&#x27;);
+      allowedAttributesMap[tag].push('class');
     }
 
     allowedClassesMap[tag] = classes;
@@ -179,12 +172,12 @@
   var transformTagsAll;
   each(options.transformTags, function(transform, tag) {
     var transFun;
-    if (typeof transform === &#x27;function&#x27;) {
+    if (typeof transform === 'function') {
       transFun = transform;
-    } else if (typeof transform === &#x22;string&#x22;) {
+    } else if (typeof transform === "string") {
       transFun = sanitizeHtml.simpleTransform(transform);
     }
-    if (tag === &#x27;*&#x27;) {
+    if (tag === '*') {
       transformTagsAll = transFun;
     } else {
       transformTagsMap[tag] = transFun;
@@ -234,7 +227,7 @@
         }
       }
 
-      if (options.allowedTags &#x26;&#x26; options.allowedTags.indexOf(name) === -1) {
+      if (options.allowedTags &amp;&amp; options.allowedTags.indexOf(name) === -1) {
         skip = true;
         if (nonTextTagsArray.indexOf(name) !== -1) {
           skipText = true;
@@ -286,7 +279,7 @@ There is also a helper method which should be enough for simple cases in which y
 ```js
 clean = sanitizeHtml(dirty, {
   transformTags: {
-    &#x27;ol&#x27;: sanitizeHtml.<span class="apidocCodeKeywordSpan">simpleTransform</span>(&#x27;ul&#x27;, {class: &#x27;foo&#x27
+    'ol': sanitizeHtml.<span class="apidocCodeKeywordSpan">simpleTransform</span>('ul', {class: 'foo'
 ;}),
   }
 });
@@ -324,3 +317,4 @@ The `simpleTransform` helper method has 3 parameters:
     ]
 </div>
 </div>
+</body></html>

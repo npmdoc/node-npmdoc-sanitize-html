@@ -63,9 +63,27 @@
 
         <li>
 
+            <a class="apidocElementLiA" href="#apidoc.element.sanitize-html.sanitize-html">
+            function <span class="apidocSignatureSpan"></span>sanitize-html
+            <span class="apidocSignatureSpan">(html, options, _recursing)</span>
+            </a>
+
+        </li>
+
+        <li>
+
             <a class="apidocElementLiA" href="#apidoc.element.sanitize-html.simpleTransform">
             function <span class="apidocSignatureSpan">sanitize-html.</span>simpleTransform
             <span class="apidocSignatureSpan">(newTagName, newAttribs, merge)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.sanitize-html.toString">
+            function <span class="apidocSignatureSpan">sanitize-html.</span>toString
+            <span class="apidocSignatureSpan">()</span>
             </a>
 
         </li>
@@ -82,6 +100,154 @@
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.sanitize-html" id="apidoc.module.sanitize-html">module sanitize-html</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.sanitize-html.sanitize-html" id="apidoc.element.sanitize-html.sanitize-html">
+        function <span class="apidocSignatureSpan"></span>sanitize-html
+        <span class="apidocSignatureSpan">(html, options, _recursing)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function sanitizeHtml(html, options, _recursing) {
+  var result = &#x27;&#x27;;
+
+  function Frame(tag, attribs) {
+    var that = this;
+    this.tag = tag;
+    this.attribs = attribs || {};
+    this.tagPosition = result.length;
+    this.text = &#x27;&#x27;; // Node inner text
+
+    this.updateParentNodeText = function() {
+      if (stack.length) {
+          var parentFrame = stack[stack.length - 1];
+          parentFrame.text += that.text;
+      }
+    };
+  }
+
+  if (!options) {
+    options = sanitizeHtml.defaults;
+    options.parser = htmlParserDefaults;
+  } else {
+    options = extend(sanitizeHtml.defaults, options);
+    if (options.parser) {
+      options.parser = extend(htmlParserDefaults, options.parser);
+    } else {
+      options.parser = htmlParserDefaults;
+    }
+  }
+
+  // Tags that contain something other than HTML, or where discarding
+  // the text when the tag is disallowed makes sense for other reasons.
+  // If we are not allowing these tags, we should drop their content too.
+  // For other tags you would drop the tag but keep its content.
+  var nonTextTagsArray = options.nonTextTags || [ &#x27;script&#x27;, &#x27;style&#x27;, &#x27;textarea&#x27; ];
+  var allowedAttributesMap;
+  var allowedAttributesGlobMap;
+  if(options.allowedAttributes) {
+    allowedAttributesMap = {};
+    allowedAttributesGlobMap = {};
+    each(options.allowedAttributes, function(attributes, tag) {
+      allowedAttributesMap[tag] = [];
+      var globRegex = [];
+      attributes.forEach(function(name) {
+        if(name.indexOf(&#x27;*&#x27;) &#x3e;= 0) {
+          globRegex.push(quoteRegexp(name).replace(/\\\*/g, &#x27;.*&#x27;));
+        } else {
+          allowedAttributesMap[tag].push(name);
+        }
+      });
+      allowedAttributesGlobMap[tag] = new RegExp(&#x27;^(&#x27; + globRegex.join(&#x27;|&#x27;) + &#x27;)$&#x27;);
+    });
+  }
+  var allowedClassesMap = {};
+  each(options.allowedClasses, function(classes, tag) {
+    // Implicitly allows the class attribute
+    if(allowedAttributesMap) {
+      if (!has(allowedAttributesMap, tag)) {
+        allowedAttributesMap[tag] = [];
+      }
+      allowedAttributesMap[tag].push(&#x27;class&#x27;);
+    }
+
+    allowedClassesMap[tag] = classes;
+  });
+
+  var transformTagsMap = {};
+  var transformTagsAll;
+  each(options.transformTags, function(transform, tag) {
+    var transFun;
+    if (typeof transform === &#x27;function&#x27;) {
+      transFun = transform;
+    } else if (typeof transform === &#x22;string&#x22;) {
+      transFun = sanitizeHtml.simpleTransform(transform);
+    }
+    if (tag === &#x27;*&#x27;) {
+      transformTagsAll = transFun;
+    } else {
+      transformTagsMap[tag] = transFun;
+    }
+  });
+
+  var depth = 0;
+  var stack = [];
+  var skipMap = {};
+  var transformMap = {};
+  var skipText = false;
+  var skipTextDepth = 0;
+
+  var parser = new htmlparser.Parser({
+    onopentag: function(name, attribs) {
+      if (skipText) {
+        skipTextDepth++;
+        return;
+      }
+      var frame = new Frame(name, attribs);
+      stack.push(frame);
+
+      var skip = false;
+      var hasText = frame.text ? true : false;
+      var transformedTag;
+      if (has(transformTagsMap, name)) {
+        transformedTag = transformTagsMap[name](name, attribs);
+
+        frame.attribs = attribs = transformedTag.attribs;
+
+        if (transformedTag.text !== undefined) {
+          frame.innerText = transformedTag.text;
+        }
+
+        if (name !== transformedTag.tagName) {
+          frame.name = name = transformedTag.tagName;
+          transformMap[depth] = transformedTag.tagName;
+        }
+      }
+      if (transformTagsAll) {
+        transformedTag = transformTagsAll(name, attribs);
+
+        frame.attribs = attribs = transformedTag.attribs;
+        if (name !== transformedTag.tagName) {
+          frame.name = name = transformedTag.tagName;
+          transformMap[depth] = transformedTag.tagName;
+        }
+      }
+
+      if (options.allowedTags &#x26;&#x26; options.allowedTags.indexOf(name) === -1) {
+        skip = true;
+        if (nonTextTagsArray.indexOf(name) !== -1) {
+          skipText = true;
+          skipTextDepth = 1;
+        }
+        skipMap[depth] = true;
+      }
+      depth++;
+      if (skip) {
+        // We want the contents but not this tag ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 
     <h2>
@@ -130,6 +296,21 @@ The `simpleTransform` helper method has 3 parameters:
 
 ```js
 ...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.sanitize-html.toString" id="apidoc.element.sanitize-html.toString">
+        function <span class="apidocSignatureSpan">sanitize-html.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return toString;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
 
 
