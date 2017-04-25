@@ -1,7 +1,7 @@
 {
     "author": "kai zhu <kaizhu256@gmail.com>",
     "buildNpmdoc": "sanitize-html",
-    "description": "api documentation for [sanitize-html (v1.14.1)](https://github.com/punkave/sanitize-html#readme) [![npm package](https://img.shields.io/npm/v/npmdoc-sanitize-html.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-sanitize-html) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-sanitize-html.svg)](https://travis-ci.org/npmdoc/node-npmdoc-sanitize-html)",
+    "description": "#### basic api documentation for  [sanitize-html (v1.14.1)](https://github.com/punkave/sanitize-html#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-sanitize-html.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-sanitize-html) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-sanitize-html.svg)](https://travis-ci.org/npmdoc/node-npmdoc-sanitize-html)",
     "devDependencies": {
         "electron-lite": "kaizhu256/node-electron-lite#alpha",
         "sanitize-html": "*",
@@ -36,5 +36,5 @@
         "start": "(set -e; export PORT=${PORT:-8080}; utility2 start test.js)",
         "test": "(set -e; export PORT=$(utility2 shServerPortRandom); utility2 test test.js)"
     },
-    "version": "0.0.3"
+    "version": "2017.4.26"
 }
